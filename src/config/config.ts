@@ -1,5 +1,10 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 
+export enum envOption {
+    DEV = "DEV",
+    PROD = "PROD",
+}
+
 export type JwtConfigType = {
     secret: string;
     accessTokenExpiresIn: number;
@@ -7,22 +12,20 @@ export type JwtConfigType = {
 };
 
 type AppConfigType = {
+    env: envOption;
     port: number;
     jwt: JwtConfigType;
     db: TypeOrmModuleOptions;
 };
 
 export const getAppConfig = (): AppConfigType => ({
-    port: parseInt(process.env.PORT, 10) || 3000,
+    env: (process.env.ENV as envOption) || envOption.DEV,
+    port: parseInt(process.env.PORT) || 3000,
     jwt: {
         secret: process.env.JWT_SECRET,
-        accessTokenExpiresIn: parseInt(
-            process.env.JWT_ACCESS_TOKEN_EXPIRES_IN,
-            10,
-        ),
+        accessTokenExpiresIn: parseInt(process.env.JWT_ACCESS_TOKEN_EXPIRES_IN),
         refreshTokenExpiresIn: parseInt(
             process.env.JWT_REFRESH_TOKEN_EXPIRES_IN,
-            10,
         ),
     },
     db: {
