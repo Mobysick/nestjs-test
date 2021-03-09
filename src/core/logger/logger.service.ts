@@ -7,7 +7,7 @@ import { envOption } from "../../config/config";
 export class AppLogger extends Logger implements LoggerService {
     logger: winston.Logger;
 
-    // TODO: Debug and CVerbose not working.
+    // TODO: Debug and Verbose not working.
 
     constructor(private configService: ConfigService, context?: string) {
         super(context);
@@ -43,7 +43,7 @@ export class AppLogger extends Logger implements LoggerService {
     }
 
     log(message: string, data?: any) {
-        this.logger.log("info", message, { ...data });
+        this.logger.log("info", message, data);
     }
 
     error(message: string, trace: string, data?: any) {
