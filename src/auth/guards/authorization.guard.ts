@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext } from "@nestjs/common";
 import { ForbiddenError } from "../../core/error/exceptions/forbidden.error";
-import { UserRole } from "../../user/user-role.enum";
+import { UserRole } from "../../user/types/user-role.enum";
 
 export class AuthorizationGuard implements CanActivate {
     constructor(private allowedRoles: UserRole[]) {}

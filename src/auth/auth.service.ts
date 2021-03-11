@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
-import { UserRole } from "src/user/user-role.enum";
+import { UserRole } from "src/user/types/user-role.enum";
 import { ApiErrorMessage } from "../core/error/api-error-message";
 import { ConflictError } from "../core/error/exceptions/conflict.error";
 import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
