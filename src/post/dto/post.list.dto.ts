@@ -1,5 +1,6 @@
 import { IsEnum, IsNumberString, IsOptional, IsString } from "class-validator";
 import { SortDestination } from "../../core/dto/sort.dest";
+import { convertEnumErrorMessage } from "../../core/utils/convert-enum-error-message";
 import { PostSortOption } from "../types/post.sort.options";
 
 export class PostListDto {
@@ -17,17 +18,13 @@ export class PostListDto {
 
     @IsOptional()
     @IsEnum(PostSortOption, {
-        message: `sortBy must be one of: [${Object.keys(PostSortOption).join(
-            ", ",
-        )}]`,
+        message: convertEnumErrorMessage("sortBy", PostSortOption),
     })
     sortBy: PostSortOption;
 
     @IsOptional()
     @IsEnum(SortDestination, {
-        message: `sortDest must be one of: [${Object.keys(SortDestination).join(
-            ", ",
-        )}]`,
+        message: convertEnumErrorMessage("sortDest", SortDestination),
     })
     sortDest: SortDestination;
 }
