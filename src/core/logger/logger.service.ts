@@ -1,16 +1,16 @@
-import { Injectable, Logger, LoggerService, Scope } from "@nestjs/common";
+import { Injectable, Logger, LoggerService } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as winston from "winston";
 import { envOption } from "../../config/config";
 
-@Injectable({ scope: Scope.TRANSIENT })
+@Injectable()
 export class AppLogger extends Logger implements LoggerService {
     logger: winston.Logger;
 
     // TODO: Debug and Verbose not working.
 
-    constructor(private configService: ConfigService, context?: string) {
-        super(context);
+    constructor(private configService: ConfigService) {
+        super();
         this.logger = winston.createLogger({
             format: winston.format.colorize({
                 colors: {
@@ -42,27 +42,42 @@ export class AppLogger extends Logger implements LoggerService {
         }
     }
 
+    private getArgs(args: string | Record<string, unknown>) {
+        if (typeof args === "string" || args instanceof String) {
+            return { data: args };
+        } else {
+            return { ...args };
+        }
+    }
+
+    private addDefaultFields(args: string | Record<string, unknown>) {
+        const result = this.getArgs(args);
+        return {
+            ...result,
+            timestamp: new Date().toISOString(),
+        };
+    }
+
     log(message: string, data?: any) {
-        this.logger.log("info", message, data);
+        this.logger.log("info", message, this.addDefaultFields(data));
     }
 
     error(message: string, trace: string, data?: any) {
         this.logger.log("error", message, {
-            ...data,
+            ...this.addDefaultFields(data),
             trace,
-            timestamp: new Date(),
         });
     }
 
     warn(message: string, data?: any) {
-        this.logger.log("warn", message, data);
+        this.logger.log("warn", message, this.addDefaultFields(data));
     }
 
     debug(message: string, data?: any) {
-        this.logger.log("debug", message, data);
+        this.logger.log("debug", message, this.addDefaultFields(data));
     }
 
     verbose(message: string, data?: any) {
-        this.logger.log("verbose", message, data);
+        this.logger.log("verbose", message, this.addDefaultFields(data));
     }
 }

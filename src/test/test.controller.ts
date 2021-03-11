@@ -5,13 +5,14 @@ import { AppLogger } from "../core/logger/logger.service";
 
 @Controller("test")
 export class TestController {
-    constructor(private logger: AppLogger) {
-        this.logger.setContext(TestController.name);
-    }
+    constructor(private logger: AppLogger) {}
 
     @Get("public")
     publicRoute() {
-        this.logger.log("public route", { qwe: "asd" });
+        this.logger.log("public route", {
+            qwe: "asd",
+            context: TestController.name,
+        });
         return "Public route";
     }
 

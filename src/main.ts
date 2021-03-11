@@ -1,9 +1,13 @@
-import { ValidationPipe } from "@nestjs/common";
+import { ValidationError, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./app.module";
-import { AppLogger } from "./core/logger/logger.service";
 import * as helmet from "helmet";
+import { AppModule } from "./app.module";
+import { FallbackExceptionFilter } from "./core/error/fallback.filter";
+import { HttpExceptionFilter } from "./core/error/http.filter";
+import { ValidationException } from "./core/error/validation.exception";
+import { ValidationFilter } from "./core/error/validation.filter";
+import { AppLogger } from "./core/logger/logger.service";
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule);
@@ -16,24 +20,28 @@ async function bootstrap() {
     app.use(helmet());
     app.enableCors();
 
+    app.useGlobalFilters(
+        new FallbackExceptionFilter(configService, logger),
+        new HttpExceptionFilter(configService, logger),
+        new ValidationFilter(),
+    );
+
     app.useGlobalPipes(
         new ValidationPipe({
-            transform: true,
+            skipMissingProperties: false,
+            exceptionFactory: (errors: ValidationError[]) => {
+                const messages = errors.reduce((prev, current) => {
+                    prev.push(...Object.values(current.constraints));
+                    return prev;
+                }, []);
+                return new ValidationException(messages);
+            },
         }),
     );
 
     const port = configService.get<number>("port");
+    const env = configService.get<number>("env");
     await app.listen(port);
-    logger.log("App running...", {
-        port,
-        timestamp: new Date().toISOString(),
-    });
-
-    logger.log("Testing logs...", { type: "info" });
-    logger.log("info", { type: "info" });
-    logger.error("error", "123", { type: "error" });
-    logger.warn("warn", { type: "warn" });
-    logger.debug("debug", { type: "debug" });
-    logger.verbose("verbose", { type: "verbose" });
+    logger.log("App running...", { port, env });
 }
 bootstrap();
