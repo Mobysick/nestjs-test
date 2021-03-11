@@ -1,13 +1,11 @@
-import {
-    ConflictException,
-    Injectable,
-    UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
 import { UserRole } from "src/user/user-role.enum";
 import { ApiErrorMessage } from "../core/error/api-error-message";
+import { ConflictError } from "../core/error/exceptions/conflict.error";
+import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
 import { User } from "../user/user.entity";
 import { UserRepository } from "../user/user.repository";
 import { LoginDto } from "./dto/login.dto";
@@ -44,13 +42,13 @@ export class AuthService {
         const { email, password } = dto;
         const user = await this.userRepository.findByEmail(email);
         if (!user) {
-            throw new UnauthorizedException(
+            throw new UnauthorizedError(
                 ApiErrorMessage.INVALID_EMAIL_OR_PASSWORD,
             );
         }
         const hash = await bcrypt.hash(password, user.salt);
         if (hash !== user.password) {
-            throw new UnauthorizedException(
+            throw new UnauthorizedError(
                 ApiErrorMessage.INVALID_EMAIL_OR_PASSWORD,
             );
         }
@@ -62,9 +60,7 @@ export class AuthService {
         const { email, password, firstName, lastName } = dto;
         const existingUser = await this.userRepository.findByEmail(email);
         if (existingUser) {
-            throw new ConflictException(
-                ApiErrorMessage.ACCOUNT_WITH_EMAIL_EXISTS,
-            );
+            throw new ConflictError(ApiErrorMessage.ACCOUNT_WITH_EMAIL_EXISTS);
         }
         let user = new User();
         user.email = email;

@@ -5,7 +5,7 @@ import {
     HttpException,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { envOption } from "src/config/config";
+import { envOption } from "src/core/config/config";
 import { v4 as uuid } from "uuid";
 import { AppLogger } from "../logger/logger.service";
 
@@ -23,12 +23,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
 
         const env = this.configService.get<envOption>("env");
 
-        const trace = uuid();
-        this.logger.error(exception.name, trace, {
+        this.logger.error(exception.name, exception.stack, {
+            traceId: uuid(),
             status: exception.getStatus(),
             name: exception.name,
             message: exception.message,
-            stack: exception.stack,
+            // stack: exception.stack,
             issuedBy: HttpExceptionFilter.name,
         });
 

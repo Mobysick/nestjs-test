@@ -1,7 +1,7 @@
 import { Injectable, Logger, LoggerService } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as winston from "winston";
-import { envOption } from "../../config/config";
+import { envOption } from "../config/config";
 
 @Injectable()
 export class AppLogger extends Logger implements LoggerService {
@@ -17,7 +17,7 @@ export class AppLogger extends Logger implements LoggerService {
                     info: "green",
                     error: "red",
                     warn: "blue",
-                    debug: "blue",
+                    debug: "gray",
                     verbose: "gray",
                 },
             }),
@@ -65,8 +65,12 @@ export class AppLogger extends Logger implements LoggerService {
     error(message: string, trace: string, data?: any) {
         this.logger.log("error", message, {
             ...this.addDefaultFields(data),
-            trace,
+            stack: trace,
         });
+        const env = this.configService.get<envOption>("env");
+        if (env !== envOption.PROD) {
+            console.error(trace);
+        }
     }
 
     warn(message: string, data?: any) {

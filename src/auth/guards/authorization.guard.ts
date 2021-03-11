@@ -1,8 +1,5 @@
-import {
-    CanActivate,
-    ExecutionContext,
-    ForbiddenException,
-} from "@nestjs/common";
+import { CanActivate, ExecutionContext } from "@nestjs/common";
+import { ForbiddenError } from "../../core/error/exceptions/forbidden.error";
 import { UserRole } from "../../user/user-role.enum";
 
 export class AuthorizationGuard implements CanActivate {
@@ -15,7 +12,7 @@ export class AuthorizationGuard implements CanActivate {
         const user = request["user"];
         const allowed = this.isAllowed(user.roles);
         if (!allowed) {
-            throw new ForbiddenException();
+            throw new ForbiddenError();
         }
         return true;
     }

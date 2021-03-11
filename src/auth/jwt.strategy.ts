@@ -1,9 +1,10 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ExtractJwt, Strategy } from "passport-jwt";
 import { ApiErrorMessage } from "../core/error/api-error-message";
+import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
 import { User } from "../user/user.entity";
 import { UserRepository } from "../user/user.repository";
 import { JwtPayload } from "./types/jwt-payload.interface";
@@ -26,7 +27,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         const user = await this.userRepository.findOne(id);
 
         if (!user) {
-            throw new UnauthorizedException(ApiErrorMessage.INVALID_AUTH_TOKEN);
+            throw new UnauthorizedError(ApiErrorMessage.INVALID_AUTH_TOKEN);
         }
 
         return user;

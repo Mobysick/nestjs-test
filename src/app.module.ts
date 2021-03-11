@@ -2,7 +2,8 @@ import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
-import { getAppConfig } from "./config/config";
+import { getAppConfig } from "./core/config/config";
+import { PostModule } from "./post/post.module";
 import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
 
@@ -22,6 +23,7 @@ import { UserModule } from "./user/user.module";
         AuthModule,
         TestModule,
         UserModule,
+        PostModule,
     ],
 })
 export class AppModule {}
