@@ -26,7 +26,6 @@ export class PostAdminController {
 
     @Get()
     async list(@Query() dto: PostListDto): Promise<PostListResponse> {
-        console.log("dto", dto);
         const { data, total } = await this.postService.list(dto);
         return { total, data: classToClass(data, { groups: ["admin"] }) };
     }

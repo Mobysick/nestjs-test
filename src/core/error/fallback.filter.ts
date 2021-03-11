@@ -22,7 +22,6 @@ export class FallbackExceptionFilter implements ExceptionFilter {
                 traceId: uuid(),
                 name: exception.name,
                 message: exception.message,
-                // stack: exception.stack,
                 issuedBy: FallbackExceptionFilter.name,
             },
         );

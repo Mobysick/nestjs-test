@@ -28,7 +28,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
             status: exception.getStatus(),
             name: exception.name,
             message: exception.message,
-            // stack: exception.stack,
             issuedBy: HttpExceptionFilter.name,
         });
 

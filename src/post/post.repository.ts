@@ -1,3 +1,4 @@
+import { SortDestination } from "src/core/dto/sort.dest";
 import { ApiErrorMessage } from "src/core/error/api-error-message";
 import {
     Brackets,
@@ -10,6 +11,7 @@ import {
 import { NotFoundError } from "../core/error/exceptions/not-found.error";
 import { PostListDto } from "./dto/post.list.dto";
 import { Post } from "./post.entity";
+import { PostSortOption } from "./types/post.sort.options";
 
 @EntityRepository(Post)
 export class PostRepository extends Repository<Post> {
@@ -24,6 +26,7 @@ export class PostRepository extends Repository<Post> {
 
     async list(dto: PostListDto): Promise<[Post[], number]> {
         const { from, limit, keyword } = dto;
+
         const query = this.createValidQueryBuilder();
 
         if (from) {
@@ -43,6 +46,25 @@ export class PostRepository extends Repository<Post> {
                     });
                 }),
             );
+        }
+
+        const sortDest = dto.sortDest || SortDestination.ASC;
+        switch (dto.sortBy) {
+            case PostSortOption.TITLE: {
+                query.orderBy(`${this.key}.title`, sortDest);
+                break;
+            }
+            case PostSortOption.CREATED_AT: {
+                query.orderBy(`${this.key}.createdAt`, sortDest);
+                break;
+            }
+            case PostSortOption.UPDATED_AT: {
+                query.orderBy(`${this.key}.updatedAt`, sortDest);
+                break;
+            }
+            default: {
+                query.orderBy(`${this.key}.title`, sortDest);
+            }
         }
 
         return query.getManyAndCount();

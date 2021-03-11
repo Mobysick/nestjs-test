@@ -1,4 +1,6 @@
-import { IsNumberString, IsOptional, IsString } from "class-validator";
+import { IsEnum, IsNumberString, IsOptional, IsString } from "class-validator";
+import { SortDestination } from "../../core/dto/sort.dest";
+import { PostSortOption } from "../types/post.sort.options";
 
 export class PostListDto {
     @IsOptional()
@@ -12,4 +14,20 @@ export class PostListDto {
     @IsOptional()
     @IsString()
     keyword: string;
+
+    @IsOptional()
+    @IsEnum(PostSortOption, {
+        message: `sortBy must be one of: [${Object.keys(PostSortOption).join(
+            ", ",
+        )}]`,
+    })
+    sortBy: PostSortOption;
+
+    @IsOptional()
+    @IsEnum(SortDestination, {
+        message: `sortDest must be one of: [${Object.keys(SortDestination).join(
+            ", ",
+        )}]`,
+    })
+    sortDest: SortDestination;
 }
