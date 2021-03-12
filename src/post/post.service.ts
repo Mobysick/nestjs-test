@@ -16,7 +16,7 @@ export class PostService {
 
     async list(dto: PostListDto): Promise<PaginatedListResponse<Post>> {
         const [data, total] = await this.postRepository.list(dto);
-        return { data, total };
+        return { total, data };
     }
 
     async create(dto: PostCreateDto): Promise<Post> {

@@ -33,8 +33,8 @@ export class PostAdminController {
     async list(
         @Query() dto: PostListDto,
     ): Promise<PaginatedListResponse<PostEntity>> {
-        const { data, total } = await this.postService.list(dto);
-        return new PaginatedListResponse({ data, total });
+        const { total, data } = await this.postService.list(dto);
+        return new PaginatedListResponse({ total, data });
     }
 
     @Post()
