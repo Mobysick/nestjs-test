@@ -2,16 +2,16 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
-import { UserRole } from "src/user/types/user-role.enum";
 import { ApiErrorMessage } from "../core/error/api-error-message";
 import { ConflictError } from "../core/error/exceptions/conflict.error";
 import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
 import { User } from "../user/user.entity";
 import { UserRepository } from "../user/user.repository";
-import { LoginDto } from "./dto/login.dto";
-import { RegisterDto } from "./dto/register.dto";
-import { AuthPayload } from "./types/auth-payload.interface";
-import { JwtPayload } from "./types/jwt-payload.interface";
+import { JwtPayload } from "./dto/jwt-payload.interface";
+import { LoginDto } from "./dto/request/login.request.dto";
+import { RegisterDto } from "./dto/request/register.request.dto";
+import { AuthPayload } from "./dto/response/auth-payload.response.dto";
+import { UserRole } from "../user/types/user-role.enum";
 
 @Injectable()
 export class AuthService {

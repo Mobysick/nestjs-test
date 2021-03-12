@@ -1,5 +1,6 @@
 import {
     Body,
+    ClassSerializerInterceptor,
     Controller,
     Delete,
     Get,
@@ -7,53 +8,69 @@ import {
     Post,
     Put,
     Query,
+    SerializeOptions,
     UseGuards,
+    UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { classToClass } from "class-transformer";
-import { AdminGuard } from "src/auth/guards/admin.guard";
-import { PostCreateDto } from "./dto/post.create.dto";
-import { PostListDto } from "./dto/post.list.dto";
-import { PostUpdateDto } from "./dto/post.update.dto";
+import { PaginatedListResponse } from "src/core/dto/response/paginated.list.response";
+import { AdminGuard } from "../auth/guards/admin.guard";
+import { ItemDetailResponse } from "../core/dto/response/item.detail.response";
+import { PostCreateDto } from "./dto/request/post.create.request.dto";
+import { PostListDto } from "./dto/request/post.list.request.dto";
+import { PostUpdateDto } from "./dto/request/post.update.request.dto";
+import { Post as PostEntity } from "./post.entity";
 import { PostService } from "./post.service";
-import { PostDetailResponse } from "./types/post.detail.response";
-import { PostListResponse } from "./types/post.list.response";
 
 @Controller("admin/posts")
 @UseGuards(AuthGuard(), AdminGuard)
+@UseInterceptors(ClassSerializerInterceptor)
 export class PostAdminController {
     constructor(private postService: PostService) {}
 
     @Get()
-    async list(@Query() dto: PostListDto): Promise<PostListResponse> {
+    @SerializeOptions({ groups: ["admin"] })
+    async list(
+        @Query() dto: PostListDto,
+    ): Promise<PaginatedListResponse<PostEntity>> {
         const { data, total } = await this.postService.list(dto);
-        return { total, data: classToClass(data, { groups: ["admin"] }) };
+        return new PaginatedListResponse({ data, total });
     }
 
     @Post()
-    async create(@Body() dto: PostCreateDto): Promise<PostDetailResponse> {
+    @SerializeOptions({ groups: ["admin", "detail"] })
+    async create(
+        @Body() dto: PostCreateDto,
+    ): Promise<ItemDetailResponse<PostEntity>> {
         const data = await this.postService.create(dto);
-        return { data: classToClass(data, { groups: ["admin", "detail"] }) };
+        return new ItemDetailResponse({ data });
     }
 
     @Get(":id")
-    async get(@Param("id") id: string): Promise<PostDetailResponse> {
+    @SerializeOptions({ groups: ["admin", "detail"] })
+    async get(
+        @Param("id") id: string,
+    ): Promise<ItemDetailResponse<PostEntity>> {
         const data = await this.postService.get(id);
-        return { data: classToClass(data, { groups: ["admin", "detail"] }) };
+        return new ItemDetailResponse({ data });
     }
 
     @Put(":id")
+    @SerializeOptions({ groups: ["admin", "detail"] })
     async update(
         @Param("id") id: string,
         @Body() dto: PostUpdateDto,
-    ): Promise<PostDetailResponse> {
+    ): Promise<ItemDetailResponse<PostEntity>> {
         const data = await this.postService.update(id, dto);
-        return { data: classToClass(data, { groups: ["admin", "detail"] }) };
+        return new ItemDetailResponse({ data });
     }
 
     @Delete(":id")
-    async delete(@Param("id") id: string): Promise<PostDetailResponse> {
+    @SerializeOptions({ groups: ["admin", "detail"] })
+    async delete(
+        @Param("id") id: string,
+    ): Promise<ItemDetailResponse<PostEntity>> {
         const data = await this.postService.delete(id);
-        return { data: classToClass(data, { groups: ["admin", "detail"] }) };
+        return new ItemDetailResponse({ data });
     }
 }

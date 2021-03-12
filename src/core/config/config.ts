@@ -1,6 +1,6 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
 
-export enum envOption {
+export enum EnvOption {
     DEV = "DEV",
     PROD = "PROD",
 }
@@ -12,14 +12,14 @@ export type JwtConfigType = {
 };
 
 type AppConfigType = {
-    env: envOption;
+    env: EnvOption;
     port: number;
     jwt: JwtConfigType;
     db: TypeOrmModuleOptions;
 };
 
 export const getAppConfig = (): AppConfigType => ({
-    env: (process.env.ENV as envOption) || envOption.DEV,
+    env: (process.env.ENV as EnvOption) || EnvOption.DEV,
     port: parseInt(process.env.PORT) || 3000,
     jwt: {
         secret: process.env.JWT_SECRET,

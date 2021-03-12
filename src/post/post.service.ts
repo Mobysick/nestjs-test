@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { PostCreateDto } from "./dto/post.create.dto";
-import { PostListDto } from "./dto/post.list.dto";
-import { PostUpdateDto } from "./dto/post.update.dto";
+import { PaginatedListResponse } from "../core/dto/response/paginated.list.response";
+import { PostCreateDto } from "./dto/request/post.create.request.dto";
+import { PostListDto } from "./dto/request/post.list.request.dto";
+import { PostUpdateDto } from "./dto/request/post.update.request.dto";
 import { Post } from "./post.entity";
 import { PostRepository } from "./post.repository";
-import { PostListResponse } from "./types/post.list.response";
 
 @Injectable()
 export class PostService {
@@ -14,7 +14,7 @@ export class PostService {
         private postRepository: PostRepository,
     ) {}
 
-    async list(dto: PostListDto): Promise<PostListResponse> {
+    async list(dto: PostListDto): Promise<PaginatedListResponse<Post>> {
         const [data, total] = await this.postRepository.list(dto);
         return { data, total };
     }

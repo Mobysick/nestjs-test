@@ -1,7 +1,7 @@
 import { Injectable, Logger, LoggerService } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import * as winston from "winston";
-import { envOption } from "../config/config";
+import { EnvOption } from "../config/config";
 
 @Injectable()
 export class AppLogger extends Logger implements LoggerService {
@@ -29,9 +29,9 @@ export class AppLogger extends Logger implements LoggerService {
             ],
         });
 
-        const env = configService.get<envOption>("env");
+        const env = configService.get<EnvOption>("env");
 
-        if (env === envOption.PROD) {
+        if (env === EnvOption.PROD) {
             this.logger.add(
                 new winston.transports.File({
                     filename: "error.log",
@@ -67,8 +67,8 @@ export class AppLogger extends Logger implements LoggerService {
             ...this.addDefaultFields(data),
             stack: trace,
         });
-        const env = this.configService.get<envOption>("env");
-        if (env !== envOption.PROD) {
+        const env = this.configService.get<EnvOption>("env");
+        if (env !== EnvOption.PROD) {
             console.error(trace);
         }
     }

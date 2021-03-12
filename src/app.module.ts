@@ -4,7 +4,6 @@ import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { AuthModule } from "./auth/auth.module";
 import { getAppConfig } from "./core/config/config";
 import { PostModule } from "./post/post.module";
-import { TestModule } from "./test/test.module";
 import { UserModule } from "./user/user.module";
 
 @Module({
@@ -21,7 +20,6 @@ import { UserModule } from "./user/user.module";
             inject: [ConfigService],
         }),
         AuthModule,
-        TestModule,
         UserModule,
         PostModule,
     ],

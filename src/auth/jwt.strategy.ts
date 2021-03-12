@@ -7,7 +7,7 @@ import { ApiErrorMessage } from "../core/error/api-error-message";
 import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
 import { User } from "../user/user.entity";
 import { UserRepository } from "../user/user.repository";
-import { JwtPayload } from "./types/jwt-payload.interface";
+import { JwtPayload } from "./dto/jwt-payload.interface";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {

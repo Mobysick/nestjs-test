@@ -1,7 +1,7 @@
 import { IsEnum, IsNumberString, IsOptional, IsString } from "class-validator";
-import { SortDestination } from "../../core/dto/sort.dest";
-import { convertEnumErrorMessage } from "../../core/utils/convert-enum-error-message";
-import { PostSortOption } from "../types/post.sort.options";
+import { SortDestination } from "../../../core/dto/request/sort.dest";
+import { convertEnumErrorMessage } from "../../../core/utils/convert-enum-error-message";
+import { PostSortOption } from "../../../post/types/post.sort.options";
 
 export class PostListDto {
     @IsOptional()

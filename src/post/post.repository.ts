@@ -1,5 +1,3 @@
-import { SortDestination } from "src/core/dto/sort.dest";
-import { ApiErrorMessage } from "src/core/error/api-error-message";
 import {
     Brackets,
     EntityRepository,
@@ -8,8 +6,10 @@ import {
     Repository,
     SelectQueryBuilder,
 } from "typeorm";
+import { SortDestination } from "../core/dto/request/sort.dest";
+import { ApiErrorMessage } from "../core/error/api-error-message";
 import { NotFoundError } from "../core/error/exceptions/not-found.error";
-import { PostListDto } from "./dto/post.list.dto";
+import { PostListDto } from "./dto/request/post.list.request.dto";
 import { Post } from "./post.entity";
 import { PostSortOption } from "./types/post.sort.options";
 

@@ -1,7 +1,7 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { v4 as uuid } from "uuid";
-import { envOption } from "../config/config";
+import { EnvOption } from "../config/config";
 import { AppLogger } from "../logger/logger.service";
 import { ApiErrorMessage } from "./api-error-message";
 
@@ -13,7 +13,7 @@ export class FallbackExceptionFilter implements ExceptionFilter {
     ) {}
 
     catch(exception: any, host: ArgumentsHost) {
-        const env = this.configService.get<envOption>("env");
+        const env = this.configService.get<EnvOption>("env");
 
         this.logger.error(
             ApiErrorMessage.INTERNAL_SERVER_ERROR,
@@ -30,12 +30,12 @@ export class FallbackExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse();
 
         const displayMessage =
-            env === envOption.PROD
+            env === EnvOption.PROD
                 ? ApiErrorMessage.INTERNAL_SERVER_ERROR
                 : exception.message;
 
         const issuedBy =
-            env === envOption.PROD ? undefined : FallbackExceptionFilter.name;
+            env === EnvOption.PROD ? undefined : FallbackExceptionFilter.name;
 
         response.status(500).json({
             statusCode: 500,

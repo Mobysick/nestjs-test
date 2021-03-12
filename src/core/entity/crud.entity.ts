@@ -1,4 +1,4 @@
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 import { Column } from "typeorm";
 import { BasicEntity } from "./basic.entity";
 
@@ -19,7 +19,7 @@ export abstract class CrudEntity extends BasicEntity {
     updatedAt: Date;
 
     @Column({ nullable: true })
-    @Expose({ groups: ["admin"] })
+    @Exclude()
     deletedAt: Date;
 
     @Expose()
