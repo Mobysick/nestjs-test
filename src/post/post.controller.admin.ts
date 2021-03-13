@@ -13,7 +13,7 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { PaginatedListResponse } from "src/core/dto/response/paginated.list.response";
+import { PaginatedListResponse } from "../core/dto/response/paginated.list.response";
 import { AdminGuard } from "../auth/guards/admin.guard";
 import { ItemDetailResponse } from "../core/dto/response/item.detail.response";
 import { PostCreateDto } from "./dto/request/post.create.request.dto";
