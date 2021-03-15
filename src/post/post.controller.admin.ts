@@ -27,7 +27,7 @@ import { PostService } from "./post.service";
 @UseGuards(AuthGuard(), AdminGuard)
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiBearerAuth()
-@ApiTags("posts")
+@ApiTags("admin/posts")
 export class PostAdminController {
     constructor(private postService: PostService) {}
 
