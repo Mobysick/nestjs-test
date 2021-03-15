@@ -13,9 +13,10 @@ import {
     UseInterceptors,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
-import { PaginatedListResponse } from "../core/dto/response/paginated.list.response";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { AdminGuard } from "../auth/guards/admin.guard";
 import { ItemDetailResponse } from "../core/dto/response/item.detail.response";
+import { PaginatedListResponse } from "../core/dto/response/paginated.list.response";
 import { PostCreateDto } from "./dto/request/post.create.request.dto";
 import { PostListDto } from "./dto/request/post.list.request.dto";
 import { PostUpdateDto } from "./dto/request/post.update.request.dto";
@@ -25,6 +26,8 @@ import { PostService } from "./post.service";
 @Controller("admin/posts")
 @UseGuards(AuthGuard(), AdminGuard)
 @UseInterceptors(ClassSerializerInterceptor)
+@ApiBearerAuth()
+@ApiTags("posts")
 export class PostAdminController {
     constructor(private postService: PostService) {}
 

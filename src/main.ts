@@ -1,6 +1,7 @@
 import { ValidationError, ValidationPipe } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import * as helmet from "helmet";
 import { AppModule } from "./app.module";
 import { FallbackExceptionFilter } from "./core/error/fallback.filter";
@@ -38,6 +39,16 @@ async function bootstrap() {
             },
         }),
     );
+
+    const openApiConfig = new DocumentBuilder()
+        .setTitle("Nest Test")
+        .setDescription("Nest Test structure for crud operations")
+        .setVersion("1.0")
+        .addTag("nest")
+        .addBearerAuth()
+        .build();
+    const document = SwaggerModule.createDocument(app, openApiConfig);
+    SwaggerModule.setup("api", app, document);
 
     const port = configService.get<number>("port");
     const env = configService.get<number>("env");
