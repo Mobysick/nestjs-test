@@ -1,3 +1,4 @@
+import { CacheDuration } from "src/core/config/config";
 import {
     Brackets,
     EntityRepository,
@@ -71,7 +72,14 @@ export class PostRepository extends Repository<Post> {
     }
 
     async getValid(id: string) {
-        const post = await this.findOne(id, { where: { ...this.adminRules } });
+        const cacheKey = new Post().getSingleItemCacheKey(id);
+        const post = await this.findOne(id, {
+            where: { ...this.adminRules },
+            cache: {
+                id: cacheKey,
+                milliseconds: CacheDuration.LONG,
+            },
+        });
         if (!post) {
             throw new NotFoundError(ApiErrorMessage.POST_NOT_FOUND);
         }

@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { GeneralEntitySubscriber } from "../entity/subscribers/general.entity.subscriber";
 
 export enum EnvOption {
     DEV = "DEV",
@@ -11,11 +12,26 @@ export type JwtConfigType = {
     refreshTokenExpiresIn: number;
 };
 
+export enum CacheDuration {
+    "SHORT" = 1000 * 30, // 30 Seconds
+    "MEDIUM" = 1000 * 60 * 10, // 10 Minutes
+    "LONG" = 1000 * 60 * 60 * 3, // 3 Hour
+    "EXTREME" = 1000 * 60 * 60 * 24, // 1 Day
+}
+
 type AppConfigType = {
     env: EnvOption;
     port: number;
     jwt: JwtConfigType;
     db: TypeOrmModuleOptions;
+    cache: {
+        durations: {
+            short: number;
+            medium: number;
+            long: number;
+            extreme: number;
+        };
+    };
 };
 
 export const getAppConfig = (): AppConfigType => ({
@@ -37,5 +53,21 @@ export const getAppConfig = (): AppConfigType => ({
         database: process.env.DB_NAME,
         autoLoadEntities: true,
         synchronize: Boolean(process.env.DB_SYNC),
+        cache: {
+            type: "redis",
+            options: {
+                host: process.env.REDIS_HOST,
+                port: parseInt(process.env.REDIS_PORT),
+            },
+        },
+        subscribers: [GeneralEntitySubscriber],
+    },
+    cache: {
+        durations: {
+            short: CacheDuration.SHORT,
+            medium: CacheDuration.MEDIUM,
+            long: CacheDuration.LONG,
+            extreme: CacheDuration.EXTREME,
+        },
     },
 });
