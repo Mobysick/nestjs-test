@@ -5,13 +5,14 @@ import * as bcrypt from "bcryptjs";
 import { ApiErrorMessage } from "../core/error/api-error-message";
 import { ConflictError } from "../core/error/exceptions/conflict.error";
 import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
+import { secureCompare } from "../core/utils/secure-compare";
+import { UserRole } from "../user/types/user-role.enum";
 import { User } from "../user/user.entity";
 import { UserRepository } from "../user/user.repository";
 import { JwtPayload } from "./dto/jwt-payload.interface";
 import { LoginDto } from "./dto/request/login.request.dto";
 import { RegisterDto } from "./dto/request/register.request.dto";
 import { AuthPayload } from "./dto/response/auth-payload.response.dto";
-import { UserRole } from "../user/types/user-role.enum";
 
 @Injectable()
 export class AuthService {
@@ -47,12 +48,11 @@ export class AuthService {
             );
         }
         const hash = await bcrypt.hash(password, user.salt);
-        if (hash !== user.password) {
+        if (secureCompare(hash, user.password)) {
             throw new UnauthorizedError(
                 ApiErrorMessage.INVALID_EMAIL_OR_PASSWORD,
             );
         }
-
         return this.mapAuthUserPayload(user);
     }
 
