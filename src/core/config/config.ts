@@ -18,6 +18,13 @@ export enum CacheDuration {
     "LONG" = 1000 * 60 * 60 * 3, // 3 Hour
     "EXTREME" = 1000 * 60 * 60 * 24, // 1 Day
 }
+export type SmtpConfigType = {
+    from: string;
+    host: string;
+    port: number;
+    user: string;
+    pass: string;
+};
 
 type AppConfigType = {
     env: EnvOption;
@@ -32,6 +39,7 @@ type AppConfigType = {
             extreme: number;
         };
     };
+    smtp: SmtpConfigType;
 };
 
 export const getAppConfig = (): AppConfigType => ({
@@ -69,5 +77,12 @@ export const getAppConfig = (): AppConfigType => ({
             long: CacheDuration.LONG,
             extreme: CacheDuration.EXTREME,
         },
+    },
+    smtp: {
+        from: process.env.SMTP_FROM,
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT),
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
     },
 });

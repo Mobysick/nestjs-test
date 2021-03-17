@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import * as bcrypt from "bcryptjs";
+import { SmtpService } from "../core/email/smtp.service";
 import { ApiErrorMessage } from "../core/error/api-error-message";
 import { ConflictError } from "../core/error/exceptions/conflict.error";
 import { UnauthorizedError } from "../core/error/exceptions/unauthorized.conflict";
@@ -20,6 +21,7 @@ export class AuthService {
         private jwtService: JwtService,
         @InjectRepository(UserRepository)
         private userRepository: UserRepository,
+        private emailService: SmtpService,
     ) {}
 
     private mapAuthUserPayload(user: User): AuthPayload {
@@ -72,5 +74,10 @@ export class AuthService {
         user = await user.save();
 
         return this.mapAuthUserPayload(user);
+    }
+
+    async testEmail(email: string) {
+        const result = await this.emailService.sendTestMail(email);
+        return { success: result };
     }
 }
