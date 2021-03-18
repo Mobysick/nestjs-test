@@ -1,5 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
+import { CrudService } from "../core/crud/crud.service.interface";
 import { PaginatedListResponse } from "../core/dto/response/paginated.list.response";
 import { PostCreateDto } from "./dto/request/post.create.request.dto";
 import { PostListDto } from "./dto/request/post.list.request.dto";
@@ -8,7 +9,7 @@ import { Post } from "./post.entity";
 import { PostRepository } from "./post.repository";
 
 @Injectable()
-export class PostService {
+export class PostService implements CrudService<Post> {
     constructor(
         @InjectRepository(PostRepository)
         private postRepository: PostRepository,

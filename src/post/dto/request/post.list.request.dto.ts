@@ -1,20 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsNumberString, IsOptional, IsString } from "class-validator";
-import { SortDestination } from "../../../core/dto/request/sort.dest";
+import { IsEnum, IsOptional, IsString } from "class-validator";
+import { ListDto } from "../../../core/dto/request/list.dto";
 import { convertEnumErrorMessage } from "../../../core/utils/convert-enum-error-message";
 import { PostSortOption } from "../../../post/types/post.sort.options";
 
-export class PostListDto {
-    @IsOptional()
-    @IsNumberString()
-    @ApiProperty({ required: false })
-    from: number;
-
-    @IsOptional()
-    @IsNumberString()
-    @ApiProperty({ required: false })
-    limit: number;
-
+export class PostListDto extends ListDto {
     @IsOptional()
     @IsString()
     @ApiProperty({ required: false })
@@ -26,11 +16,4 @@ export class PostListDto {
         message: convertEnumErrorMessage("sortBy", PostSortOption),
     })
     sortBy: PostSortOption;
-
-    @IsOptional()
-    @ApiProperty({ required: false, enum: SortDestination })
-    @IsEnum(SortDestination, {
-        message: convertEnumErrorMessage("sortDest", SortDestination),
-    })
-    sortDest: SortDestination;
 }

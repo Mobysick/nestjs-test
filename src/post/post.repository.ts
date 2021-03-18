@@ -1,31 +1,34 @@
-import { CacheDuration } from "src/core/config/config";
 import {
     Brackets,
     EntityRepository,
-    FindConditions,
     IsNull,
-    Repository,
     SelectQueryBuilder,
 } from "typeorm";
+import { CrudRepository } from "../core/crud/crud.repository";
 import { SortDestination } from "../core/dto/request/sort.dest";
 import { ApiErrorMessage } from "../core/error/api-error-message";
-import { NotFoundError } from "../core/error/exceptions/not-found.error";
 import { PostListDto } from "./dto/request/post.list.request.dto";
 import { Post } from "./post.entity";
 import { PostSortOption } from "./types/post.sort.options";
 
 @EntityRepository(Post)
-export class PostRepository extends Repository<Post> {
-    public readonly key = "post";
-    public readonly adminRules: FindConditions<Post> = { deletedAt: IsNull() };
+export class PostRepository extends CrudRepository<Post, PostListDto> {
+    constructor() {
+        super({
+            key: "post",
+            adminRules: { deletedAt: IsNull() },
+            singleItemCacheKey: new Post().getSingleItemCacheKey(),
+            notFoundMessage: ApiErrorMessage.POST_NOT_FOUND,
+        });
+    }
 
-    private createValidQueryBuilder(): SelectQueryBuilder<Post> {
+    protected createValidQueryBuilder(): SelectQueryBuilder<Post> {
         return this.createQueryBuilder(this.key).andWhere(
             `${this.key}.deletedAt IS NULL`,
         );
     }
 
-    async list(dto: PostListDto): Promise<[Post[], number]> {
+    protected getListQuery(dto: PostListDto): SelectQueryBuilder<Post> {
         const { from, limit, keyword } = dto;
 
         const query = this.createValidQueryBuilder();
@@ -68,21 +71,6 @@ export class PostRepository extends Repository<Post> {
             }
         }
 
-        return query.getManyAndCount();
-    }
-
-    async getValid(id: string) {
-        const cacheKey = new Post().getSingleItemCacheKey(id);
-        const post = await this.findOne(id, {
-            where: { ...this.adminRules },
-            cache: {
-                id: cacheKey,
-                milliseconds: CacheDuration.LONG,
-            },
-        });
-        if (!post) {
-            throw new NotFoundError(ApiErrorMessage.POST_NOT_FOUND);
-        }
-        return post;
+        return query;
     }
 }

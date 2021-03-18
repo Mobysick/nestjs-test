@@ -50,11 +50,12 @@ export class AuthService {
             );
         }
         const hash = await bcrypt.hash(password, user.salt);
-        if (secureCompare(hash, user.password)) {
+        if (!secureCompare(hash, user.password)) {
             throw new UnauthorizedError(
                 ApiErrorMessage.INVALID_EMAIL_OR_PASSWORD,
             );
         }
+
         return this.mapAuthUserPayload(user);
     }
 
